@@ -81,7 +81,10 @@ const WagdieCreator = () => {
         }, 100);
     };
     
-
+    const handleClearAll = () => {
+        setSelectedImages({});
+    };
+    
     const downloadImage = () => {
         const canvas = document.createElement('canvas');
         canvas.width = 400;
@@ -146,12 +149,13 @@ const WagdieCreator = () => {
                     ))}
                 </div>
                 <button onClick={() => handleImageChange(activeTab, null)} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px', }}>⛔ CLEAR</button>
+                <button onClick={handleClearAll} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🚫 CLEAR ALL</button>
                 <button onClick={handleRandomSelection} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🎲 RANDOMIZE</button>
                 <button onClick={handleRandomAll} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🔀 RANDOM ALL</button>
             </div>
             
             <div style={{ marginLeft: '20px' }}>
-                <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px' }}>
+                <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px', border: '2px solid white' }}>
                     {categories.map(category => {
                         const imageUrl = selectedImages[category];
                         return imageUrl ? (
