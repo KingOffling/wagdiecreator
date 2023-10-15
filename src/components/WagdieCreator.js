@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import html2canvas from 'html2canvas';
 
 const categories = ["background", "back", "body", "hair", "armor", "mask", "front"];
 const panelHeight = '600px';
