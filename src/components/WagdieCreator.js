@@ -52,6 +52,34 @@ const WagdieCreator = () => {
         setSelectedImages(randomizedSelections);
     };
     
+    const copyToClipboard = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+    
+        categories.forEach(category => {
+            const imageUrl = selectedImages[category];
+            if (imageUrl) {
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, 400, 400);
+                };
+            }
+        });
+    
+        setTimeout(async () => {
+            canvas.toBlob(async blob => {
+                try {
+                    const item = new ClipboardItem({ 'image/png': blob });
+                    await navigator.clipboard.write([item]);
+                } catch (error) {
+                    alert('Failed to copy the image!');
+                }
+            });
+        }, 100);
+    };
     
 
     const downloadImage = () => {
@@ -136,7 +164,11 @@ const WagdieCreator = () => {
                         ) : null;
                     })}
                 </div>
-                <button onClick={downloadImage} style={{ marginTop: '20px', fontSize: '20px' }}>DOWNLOAD</button>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
+                    <button onClick={downloadImage} style={{ marginBottom: '10px', fontSize: '20px' }}>DOWNLOAD</button>
+                    <button onClick={copyToClipboard} style={{ fontSize: '20px' }}>COPY</button>
+                </div>
+
             </div>
         </div>
     );
