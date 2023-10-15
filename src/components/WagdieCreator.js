@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-const categories = ["background", "back", "body", "hair", "armor", "mask", "front"];
+
+const categories = ["background", "back", "body", "armor", "hair", "mask", "front"];
 const panelHeight = '600px';
 
 const imageCounts = {
@@ -32,6 +33,26 @@ const WagdieCreator = () => {
             [category]: imageUrl
         });
     };
+
+    const handleRandomSelection = () => {
+        const optionsForActiveTab = imageOptions[activeTab];
+        const randomImage = optionsForActiveTab[Math.floor(Math.random() * optionsForActiveTab.length)];
+        handleImageChange(activeTab, randomImage);
+    };
+
+    const handleRandomAll = () => {
+        let randomizedSelections = {};
+    
+        categories.forEach(category => {
+            const optionsForCategory = imageOptions[category];
+            const randomImage = optionsForCategory[Math.floor(Math.random() * optionsForCategory.length)];
+            randomizedSelections[category] = `/images/${category}/${randomImage}`;
+        });
+    
+        setSelectedImages(randomizedSelections);
+    };
+    
+    
 
     const downloadImage = () => {
         const canvas = document.createElement('canvas');
@@ -97,6 +118,8 @@ const WagdieCreator = () => {
                     ))}
                 </div>
                 <button onClick={() => handleImageChange(activeTab, null)} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px', }}>⛔ CLEAR</button>
+                <button onClick={handleRandomSelection} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🎲 RANDOMIZE</button>
+                <button onClick={handleRandomAll} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🔀 RANDOM ALL</button>
             </div>
             
             <div style={{ marginLeft: '20px' }}>
