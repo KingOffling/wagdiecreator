@@ -13,7 +13,7 @@ const imageCounts = {
 };
 
 const imageCountsForD56k = {
-    background: 10,
+    background: 70,
     back: 4,
     body: 644,
     hair: 130,
