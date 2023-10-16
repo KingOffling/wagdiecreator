@@ -35,8 +35,6 @@ const WagdieCreator = () => {
     const [isD56kEnabled, setIsD56kEnabled] = useState(false);
     const toggleImagePath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
 
-    const [backgroundGif, setBackgroundGif] = useState(null);
-
 
     useEffect(() => {
         const updatedImageOptions = {};
@@ -53,17 +51,11 @@ const WagdieCreator = () => {
 
             if (isD56kEnabled) {
                 let d56kImages;
-                if (category === 'background') {
-                    d56kImages = Array.from({ length: imageCountsForD56k[category] || 0 }).map((_, index) => {
-                        const num = String(index + 1).padStart(3, '0');
-                        return `/d56k/d56k_${category}_${num}.gif`;
-                    });
-                } else {
-                    d56kImages = Array.from({ length: imageCountsForD56k[category] || 0 }).map((_, index) => {
-                        const num = String(index + 1).padStart(3, '0');
-                        return `/d56k/d56k_${category}_${num}.png`;
-                    });
-                }
+               
+                d56kImages = Array.from({ length: imageCountsForD56k[category] || 0 }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `/d56k/d56k_${category}_${num}.png`;
+                });
                 imagesToInclude = [...imagesToInclude, ...d56kImages];
             }
 
@@ -77,14 +69,10 @@ const WagdieCreator = () => {
 
     const handleImageChange = (category, imageName) => {
         const imageUrl = imageName ? `/images/${category}/${imageName}` : null;
-        if (category === 'background' && isD56kEnabled) {
-            setBackgroundGif(imageUrl);
-        } else {
             setSelectedImages(prevState => ({
                 ...prevState,
                 [category]: imageUrl
             }));
-        }
     };
 
 
@@ -236,10 +224,9 @@ const WagdieCreator = () => {
                 <img src="/wagdie_logo.png" alt="Wagdie Logo" style={{ maxWidth: '30%', paddingBottom: '20px', paddingTop: '15px' }} />
 
                 <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px', border: '2px solid white' }}>
-                    {backgroundGif && <img src={backgroundGif} alt="Background GIF" style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: 0 }} />}
                     {categories.map(category => {
                         const imageUrl = selectedImages[category];
-                        return imageUrl && category !== 'background' ? (
+                        return imageUrl ? (
                             <img
                                 key={category}
                                 src={imageUrl}
