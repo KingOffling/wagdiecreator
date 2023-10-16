@@ -82,9 +82,15 @@ const WagdieCreator = () => {
 
 
     const randomizeCategory = (category) => {
+        if (category !== 'body' && Math.random() < 0.2) {
+            handleImageChange(category, null);
+            return;
+        }
+    
         const randomIndex = Math.floor(Math.random() * imageOptions[category].length);
         handleImageChange(category, imageOptions[category][randomIndex]);
     };
+    
 
     const randomizeAllCategories = () => {
         categories.forEach(cat => randomizeCategory(cat));
