@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-
-const categories = ["background", "back", "body", "armor", "hair", "mask", "front"];
+const categories = ["background", "back", "body", "hair", "armor", "mask", "front"];
 const panelHeight = '600px';
 
 const imageCounts = {
@@ -14,44 +13,79 @@ const imageCounts = {
     front: 4
 };
 
-const imageOptions = {};
-for (let category in imageCounts) {
-    imageOptions[category] = Array.from({ length: imageCounts[category] }).map((_, index) => {
-        const num = String(index + 1).padStart(3, '0');
-        return `${category}_${num}.png`;
-    });
-}
+const imageCountsForD56k = {
+    background: 0,
+    back: 4,
+    body: 0,
+    hair: 14,
+    armor: 107,
+    mask: 27,
+    front: 0
+};
+
 
 const WagdieCreator = () => {
     const [selectedImages, setSelectedImages] = useState({});
-    const [activeTab, setActiveTab] = useState(categories[0]);  // Default to the first category
+    const [activeTab, setActiveTab] = useState(categories[0]);
+    const [imageOptions, setImageOptions] = useState({});
+
+    const [isWagdieEnabled, setIsWagdieEnabled] = useState(true);
+    const wagdieToggleImagePath = isWagdieEnabled ? "/wagdie_on.png" : "/wagdie_off.png";
+    
+    const [isD56kEnabled, setIsD56kEnabled] = useState(false);
+    const toggleImagePath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
+    
+
+    useEffect(() => {
+        const updatedImageOptions = {};
+    
+        for (let category in imageCounts) {
+            let imagesToInclude = [];
+    
+            if (isWagdieEnabled) {
+                imagesToInclude = Array.from({ length: imageCounts[category] }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `${category}_${num}.png`;
+                });
+            }
+    
+            if (isD56kEnabled) {
+                let d56kImages = Array.from({ length: imageCountsForD56k[category] || 0 }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `/d56k/d56k_${category}_${num}.png`;
+                });
+                imagesToInclude = [...imagesToInclude, ...d56kImages];
+            }
+    
+            updatedImageOptions[category] = imagesToInclude;
+        }
+    
+        setImageOptions(updatedImageOptions);
+    }, [isWagdieEnabled, isD56kEnabled]);
+    
 
     const handleImageChange = (category, imageName) => {
         const imageUrl = imageName ? `/images/${category}/${imageName}` : null;
-        setSelectedImages({
-            ...selectedImages,
+        setSelectedImages(prevState => ({
+            ...prevState,
             [category]: imageUrl
-        });
+        }));
     };
 
-    const handleRandomSelection = () => {
-        const optionsForActiveTab = imageOptions[activeTab];
-        const randomImage = optionsForActiveTab[Math.floor(Math.random() * optionsForActiveTab.length)];
-        handleImageChange(activeTab, randomImage);
+    const clearAllImages = () => {
+        setSelectedImages({});
     };
 
-    const handleRandomAll = () => {
-        let randomizedSelections = {};
     
-        categories.forEach(category => {
-            const optionsForCategory = imageOptions[category];
-            const randomImage = optionsForCategory[Math.floor(Math.random() * optionsForCategory.length)];
-            randomizedSelections[category] = `/images/${category}/${randomImage}`;
-        });
-    
-        setSelectedImages(randomizedSelections);
+    const randomizeCategory = (category) => {
+        const randomIndex = Math.floor(Math.random() * imageOptions[category].length);
+        handleImageChange(category, imageOptions[category][randomIndex]);
     };
-    
+
+    const randomizeAllCategories = () => {
+        categories.forEach(cat => randomizeCategory(cat));
+    };
+
     const copyToClipboard = async () => {
         const canvas = document.createElement('canvas');
         canvas.width = 400;
@@ -74,16 +108,14 @@ const WagdieCreator = () => {
                 try {
                     const item = new ClipboardItem({ 'image/png': blob });
                     await navigator.clipboard.write([item]);
+                    alert('Image copied to clipboard!');
                 } catch (error) {
                     alert('Failed to copy the image!');
                 }
             });
         }, 100);
     };
-    
-    const handleClearAll = () => {
-        setSelectedImages({});
-    };
+
     
     const downloadImage = () => {
         const canvas = document.createElement('canvas');
@@ -112,22 +144,31 @@ const WagdieCreator = () => {
             link.click();
         }, 100); // Added a small delay to ensure all images are loaded and drawn before the image is exported
     };
-    
+
     return (
         <div style={{ display: 'flex' }}>
-            <div style={{ width: '240px', borderRight: '1px solid #ccc', padding: '10px', overflowX: 'hidden', backgroundColor: '#b5b5b5' }}>  {/* Increase width and set overflowX to hidden */}
+            <div style={{ width: '430px', borderRight: '1px solid #ccc', padding: '10px', overflowX: 'hidden', backgroundColor: '#b5b5b5' }}>
                 
-                {/* Dropdown for category selection */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px', gap: '5px' }}>
+                    <img 
+                        src={wagdieToggleImagePath} 
+                        alt="Toggle Wagdie" 
+                        style={{ width: '50px', height: '50px', cursor: 'pointer' }} 
+                        onClick={() => setIsWagdieEnabled(!isWagdieEnabled)} 
+                    />
+
+                    <img 
+                        src={toggleImagePath} 
+                        alt="Toggle d56k" 
+                        style={{ width: '50px', height: '50px', cursor: 'pointer' }} 
+                        onClick={() => setIsD56kEnabled(!isD56kEnabled)} 
+                    />
+                </div>
+
                 <select 
                     value={activeTab} 
                     onChange={e => setActiveTab(e.target.value)} 
-                    style={{ 
-                        marginBottom: '10px', 
-                        width: '100%', 
-                        fontSize: '20px',       // Larger text size
-                        textAlign: 'center',   // Centered text
-                        textAlignLast: 'center' // Ensures the selected value is also centered
-                    }}
+                    style={{ marginBottom: '10px', width: '100%', fontSize: '20px', textAlign: 'center', textAlignLast: 'center' }}
                 >
                     {categories.map(category => (
                         <option key={category} value={category}>
@@ -136,46 +177,61 @@ const WagdieCreator = () => {
                     ))}
                 </select>
 
-                <div style={{ overflowY: 'auto', maxHeight: `calc(${panelHeight} - 80px)`, textAlign: 'center' }}>
-                    {imageOptions[activeTab].map(imageName => (
-                        <div key={imageName} style={{ marginBottom: '10px', width: '220px', marginLeft: 'auto', marginRight: 'auto' }}>  {/* Increase wrapper width */}
-                            <img
-                                src={`/images/${activeTab}/${imageName}`}
-                                alt={imageName}
-                                style={{ width: '200px', height: '200px', cursor: 'pointer', border: selectedImages[activeTab] === `/images/${activeTab}/${imageName}` ? '2px solid red' : '2px solid transparent', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                                onClick={() => handleImageChange(activeTab, imageName)}
-                            />
-                        </div>
-                    ))}
+                <div 
+    style={{ 
+        overflowY: (imageOptions[activeTab] && imageOptions[activeTab].length > 0) ? 'scroll' : 'hidden', 
+        maxHeight: `calc(${panelHeight} - 80px)`, 
+        textAlign: 'center' 
+    }}
+>
+    <div style={{ minHeight: `calc(${panelHeight} - 80px)` }}>
+        {imageOptions[activeTab] && imageOptions[activeTab].length > 0 ? (
+            imageOptions[activeTab].map(imageName => (
+                <div key={imageName} style={{ marginBottom: '10px', width: '220px', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <img
+                        src={`/images/${activeTab}/${imageName}`}
+                        alt={imageName}
+                        style={{ width: '200px', height: '200px', cursor: 'pointer', border: selectedImages[activeTab] === `/images/${activeTab}/${imageName}` ? '2px solid red' : '2px solid transparent', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                        onClick={() => handleImageChange(activeTab, imageName)}
+                    />
                 </div>
-                <button onClick={() => handleImageChange(activeTab, null)} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px', }}>⛔ CLEAR</button>
-                <button onClick={handleClearAll} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🚫 CLEAR ALL</button>
-                <button onClick={handleRandomSelection} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🎲 RANDOMIZE</button>
-                <button onClick={handleRandomAll} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🔀 RANDOM ALL</button>
+            ))
+        ) : (
+            <div style={{ marginTop: 'calc((100% - 20px) / 2)', fontSize: '20px', color: '#888' }}>ALL TOGGLES OFF</div>
+        )}
+    </div>
+</div>
+
+
+                <button onClick={() => handleImageChange(activeTab, null)} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🚫 CLEAR</button>
+                <button onClick={clearAllImages} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>⛔ CLEAR ALL</button>
+                <button onClick={() => randomizeCategory(activeTab)} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🎲 RANDOMIZE</button>
+                <button onClick={randomizeAllCategories} style={{ display: 'block', width: '100%', marginTop: '10px', fontSize: '20px' }}>🔀 RANDOM ALL</button>
             </div>
             
-            <div style={{ marginLeft: '20px' }}>
-                <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px', border: '2px solid white' }}>
-                    {categories.map(category => {
-                        const imageUrl = selectedImages[category];
-                        return imageUrl ? (
-                            <img
-                                key={category}
-                                src={imageUrl}
-                                alt={category}
-                                style={{ position: 'absolute', top: 0, left: 0, width: '400px', height: '400px' }}
-                            />
-                        ) : null;
-                    })}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-                    <button onClick={downloadImage} style={{ marginBottom: '10px', fontSize: '20px' }}>DOWNLOAD</button>
-                    <button onClick={copyToClipboard} style={{ fontSize: '20px' }}>COPY</button>
-                </div>
+            <div style={{ marginLeft: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <img src="/wagdie_logo.png" alt="Wagdie Logo" style={{maxWidth: '30%', paddingBottom: '20px', paddingTop: '15px'}} />
 
+            <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px', border: '2px solid white' }}>
+                {categories.map(category => {
+                    const imageUrl = selectedImages[category];
+                    return imageUrl ? (
+                        <img
+                            key={category}
+                            src={imageUrl}
+                            alt={category}
+                            style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%' }}
+                        />
+                    ) : null;
+                })}
             </div>
+
+            <button onClick={downloadImage} style={{ display: 'block', width: '220px', marginTop: '20px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>💾 DOWNLOAD</button>
+            <button onClick={copyToClipboard} style={{ display: 'block', width: '220px', marginTop: '10px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>🔥 COPY</button>
         </div>
+    </div>
     );
 };
 
-export default WagdieCreator;
+export default WagdieCreator;    
+    
