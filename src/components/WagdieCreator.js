@@ -108,7 +108,6 @@ const WagdieCreator = () => {
                 try {
                     const item = new ClipboardItem({ 'image/png': blob });
                     await navigator.clipboard.write([item]);
-                    alert('Image copied to clipboard!');
                 } catch (error) {
                     alert('Failed to copy the image!');
                 }
