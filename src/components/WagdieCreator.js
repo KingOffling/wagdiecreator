@@ -13,10 +13,10 @@ const imageCounts = {
 };
 
 const imageCountsForD56k = {
-    background: 0,
+    background: 10,
     back: 4,
-    body: 0,
-    hair: 14,
+    body: 644,
+    hair: 130,
     armor: 107,
     mask: 27,
     front: 0
