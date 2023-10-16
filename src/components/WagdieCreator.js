@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const categories = ["background", "back", "body", "hair", "armor", "mask", "front"];
+const categories = ["background", "back", "body",  "armor", "hair", "mask", "front"];
 
 const imageCounts = {
     background: 19,
@@ -24,6 +24,7 @@ const imageCountsForD56k = {
 
 
 const WagdieCreator = () => {
+    
     const [selectedImages, setSelectedImages] = useState({});
     const [activeTab, setActiveTab] = useState(categories[0]);
     const [imageOptions, setImageOptions] = useState({});
