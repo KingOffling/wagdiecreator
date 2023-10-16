@@ -22,6 +22,17 @@ const imageCountsForD56k = {
     front: 3
 };
 
+const clearChances = {
+    background: 0,  
+    back: 0.5,  
+    body: 0,      
+    hair: 0.20,   
+    armor: 0.15,   
+    mask: 0.3,       
+    front: 0.8      
+};
+
+
 
 const WagdieCreator = () => {
     
@@ -82,7 +93,8 @@ const WagdieCreator = () => {
 
 
     const randomizeCategory = (category) => {
-        if (category !== 'body' && Math.random() < 0.2) {
+        // Custom percentage chance to clear the layer
+        if (Math.random() < clearChances[category]) {
             handleImageChange(category, null);
             return;
         }
@@ -90,6 +102,7 @@ const WagdieCreator = () => {
         const randomIndex = Math.floor(Math.random() * imageOptions[category].length);
         handleImageChange(category, imageOptions[category][randomIndex]);
     };
+    
     
 
     const randomizeAllCategories = () => {
