@@ -18,8 +18,8 @@ const imageCountsForD56k = {
     body: 644,
     hair: 130,
     armor: 107,
-    mask: 27,
-    front: 0
+    mask: 25,
+    front: 3
 };
 
 
