@@ -103,6 +103,7 @@ const WagdieCreator = () => {
         handleImageChange(category, imageOptions[category][randomIndex]);
     };
 
+    // eslint-disable-next-line no-unused-vars
     const CategoryIcon = ({ category, isActive }) => {
         const imageUrl = `/public/${category}${isActive ? '_active' : ''}.png`;
 
