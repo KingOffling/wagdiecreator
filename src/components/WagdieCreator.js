@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const categories = ["background", "back", "body",  "armor", "hair", "mask", "front"];
+const categories = ["background", "back", "body", "armor", "hair", "mask", "front"];
 
 const imageCounts = {
     background: 19,
@@ -23,19 +23,19 @@ const imageCountsForD56k = {
 };
 
 const clearChances = {
-    background: 0,  
-    back: 0.5,  
-    body: 0,      
-    hair: 0.20,   
-    armor: 0.15,   
-    mask: 0.3,       
-    front: 0.8      
+    background: 0,
+    back: 0.5,
+    body: 0,
+    hair: 0.20,
+    armor: 0.15,
+    mask: 0.3,
+    front: 0.8
 };
 
 
 
 const WagdieCreator = () => {
-    
+
     const [selectedImages, setSelectedImages] = useState({});
     const [activeTab, setActiveTab] = useState(categories[0]);
     const [imageOptions, setImageOptions] = useState({});
@@ -62,7 +62,7 @@ const WagdieCreator = () => {
 
             if (isD56kEnabled) {
                 let d56kImages;
-               
+
                 d56kImages = Array.from({ length: imageCountsForD56k[category] || 0 }).map((_, index) => {
                     const num = String(index + 1).padStart(3, '0');
                     return `/d56k/d56k_${category}_${num}.png`;
@@ -80,10 +80,10 @@ const WagdieCreator = () => {
 
     const handleImageChange = (category, imageName) => {
         const imageUrl = imageName ? `/images/${category}/${imageName}` : null;
-            setSelectedImages(prevState => ({
-                ...prevState,
-                [category]: imageUrl
-            }));
+        setSelectedImages(prevState => ({
+            ...prevState,
+            [category]: imageUrl
+        }));
     };
 
 
@@ -98,12 +98,28 @@ const WagdieCreator = () => {
             handleImageChange(category, null);
             return;
         }
-    
+
         const randomIndex = Math.floor(Math.random() * imageOptions[category].length);
         handleImageChange(category, imageOptions[category][randomIndex]);
     };
-    
-    
+
+    const CategoryIcon = ({ category, isActive }) => {
+        const imageUrl = `/public/${category}${isActive ? '_active' : ''}.png`;
+
+        return (
+            <img
+                src={imageUrl}
+                alt={category}
+                style={{
+                    width: '70px',
+                    height: '70px',
+                    marginBottom: '5px',
+                    cursor: 'pointer'
+                }}
+            />
+        );
+    };
+
 
     const randomizeAllCategories = () => {
         categories.forEach(cat => randomizeCategory(cat));
@@ -115,7 +131,7 @@ const WagdieCreator = () => {
         canvas.height = 400;
         const ctx = canvas.getContext('2d');
 
-        categories.forEach(category => {
+        categoryOrder.forEach(category => {
             const imageUrl = selectedImages[category];
             if (imageUrl) {
                 const img = new Image();
@@ -139,6 +155,19 @@ const WagdieCreator = () => {
     };
 
 
+    const [categoryOrder, setCategoryOrder] = useState(categories);
+    const handleCategoryShift = (direction) => {
+        const index = categoryOrder.indexOf(activeTab);
+        if ((direction === "up" && index > 0) || (direction === "down" && index < categoryOrder.length - 1)) {
+            const newOrder = [...categoryOrder];
+            const temp = newOrder[index];
+            newOrder[index] = newOrder[index + (direction === "up" ? -1 : 1)];
+            newOrder[index + (direction === "up" ? -1 : 1)] = temp;
+            setCategoryOrder(newOrder);
+        }
+    };
+
+
     const downloadImage = () => {
         const canvas = document.createElement('canvas');
         canvas.width = 400;
@@ -148,7 +177,7 @@ const WagdieCreator = () => {
         // Ensure the canvas starts with a transparent background
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        categories.forEach(category => {
+        categoryOrder.forEach(category => {
             const imageUrl = selectedImages[category];
             if (imageUrl) {
                 const img = new Image();
@@ -239,22 +268,98 @@ const WagdieCreator = () => {
             </div>
 
 
+
+
+
+            <div style={{
+    display: 'flex',
+    flexDirection: 'row'
+}}>
+    <div style={{
+        width: '70px',
+        height: `${140 + (50 * categoryOrder.length)}px`,
+        flexShrink: 0,
+        flexGrow: 0,
+        borderRight: '1px solid #000000',
+        backgroundColor: '#999999',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        padding: '70px 0 0 0'
+    }}>
+        {categoryOrder.map(category => (
+            <div key={category} style={{ position: 'relative', display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+                <img
+                    src={`/${category}${category === activeTab ? '_active' : ''}.png`}
+                    alt={category}
+                    style={{
+                        width: '50px',
+                        height: '50px',
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => setActiveTab(category)}
+                />
+            </div>
+        ))}
+    </div>
+    
+    <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        padding: '70px 0 0 0',
+        height: `${140 + (50 * categoryOrder.length)}px`,
+        marginLeft: '5px'
+    }}>
+        {categoryOrder.map((category, index) => (
+            <div key={category} style={{ display: 'flex', flexDirection: 'column', marginBottom: '5px', height: '50px', justifyContent: 'center' }}>
+                {category === activeTab && (
+                    <>
+                        <button
+                            onClick={() => handleCategoryShift("up")}
+                            disabled={index === 0}
+                            style={{ marginBottom: '2px', cursor: index === 0 ? 'default' : 'pointer' }}
+                        >🔼</button>
+                        <button
+                            onClick={() => handleCategoryShift("down")}
+                            disabled={index === categoryOrder.length - 1}
+                            style={{ cursor: index === categoryOrder.length - 1 ? 'default' : 'pointer' }}
+                        >🔽</button>
+                    </>
+                )}
+            </div>
+        ))}
+    </div>
+</div>
+
+
+
+
+
+
+
             <div style={{ marginLeft: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img src="/wagdie_logo.png" alt="Wagdie Logo" style={{ maxWidth: '30%', paddingBottom: '20px', paddingTop: '15px' }} />
 
+
+
                 <div id="wagdie-container" style={{ position: 'relative', width: '400px', height: '400px', marginTop: '20px', border: '2px solid white' }}>
-                    {categories.map(category => {
+                    {categoryOrder.map((category, index) => {
                         const imageUrl = selectedImages[category];
                         return imageUrl ? (
                             <img
                                 key={category}
                                 src={imageUrl}
                                 alt={category}
-                                style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: 1 }}
+                                style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', zIndex: index }}
                             />
                         ) : null;
                     })}
                 </div>
+
+
+
 
 
                 <button onClick={downloadImage} style={{ display: 'block', width: '220px', marginTop: '20px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>💾 DOWNLOAD</button>
