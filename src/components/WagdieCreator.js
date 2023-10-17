@@ -277,7 +277,7 @@ const WagdieCreator = () => {
 }}>
     <div style={{
         width: '70px',
-        height: `${140 + (50 * categoryOrder.length)}px`,
+        height: `${60 + (50 * categoryOrder.length)}px`,
         flexShrink: 0,
         flexGrow: 0,
         borderRight: '1px solid #000000',
