@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
+//This defines categories, and default order.
 const categories = ["background", "back", "body", "armor", "hair", "mask", "front"];
 
+//Set this to the number of traits in each category (WAGDIE).
 const imageCounts = {
     background: 19,
-    back: 10,
-    body: 33,
+    back: 34,
+    body: 37,
     hair: 41,
-    armor: 45,
-    mask: 75,
+    armor: 68,
+    mask: 100,
     front: 4
 };
 
+//Set this to the number of traits in each category (BOOBA).
 const imageCountsForD56k = {
     background: 70,
     back: 4,
@@ -22,6 +25,7 @@ const imageCountsForD56k = {
     front: 3
 };
 
+//This defines a percent chance to clear category instead.
 const clearChances = {
     background: 0,
     back: 0.5,
@@ -40,6 +44,8 @@ const WagdieCreator = () => {
     const [activeTab, setActiveTab] = useState(categories[0]);
     const [imageOptions, setImageOptions] = useState({});
 
+
+    //Each collection needs these, and UI images
     const [isWagdieEnabled, setIsWagdieEnabled] = useState(true);
     const wagdieToggleImagePath = isWagdieEnabled ? "/wagdie_on.png" : "/wagdie_off.png";
 
@@ -53,6 +59,7 @@ const WagdieCreator = () => {
         for (let category in imageCounts) {
             let imagesToInclude = [];
 
+            // Each collection needs its own calls to appear as options
             if (isWagdieEnabled) {
                 imagesToInclude = Array.from({ length: imageCounts[category] }).map((_, index) => {
                     const num = String(index + 1).padStart(3, '0');
@@ -93,7 +100,7 @@ const WagdieCreator = () => {
 
 
     const randomizeCategory = (category) => {
-        // Custom percentage chance to clear the layer
+        // Custom percentage chance to clear the layer (as defined)
         if (Math.random() < clearChances[category]) {
             handleImageChange(category, null);
             return;
@@ -103,6 +110,7 @@ const WagdieCreator = () => {
         handleImageChange(category, imageOptions[category][randomIndex]);
     };
 
+    // ignore this:
     // eslint-disable-next-line no-unused-vars
     const CategoryIcon = ({ category, isActive }) => {
         const imageUrl = `/public/${category}${isActive ? '_active' : ''}.png`;
@@ -121,7 +129,7 @@ const WagdieCreator = () => {
         );
     };
 
-
+// Button functions
     const randomizeAllCategories = () => {
         categories.forEach(cat => randomizeCategory(cat));
     };
@@ -337,9 +345,6 @@ const WagdieCreator = () => {
 
 
 
-
-
-
             <div style={{ marginLeft: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img src="/wagdie_logo.png" alt="Wagdie Logo" style={{ maxWidth: '30%', paddingBottom: '20px', paddingTop: '15px' }} />
 
@@ -358,9 +363,6 @@ const WagdieCreator = () => {
                         ) : null;
                     })}
                 </div>
-
-
-
 
 
                 <button onClick={downloadImage} style={{ display: 'block', width: '220px', marginTop: '20px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>💾 DOWNLOAD</button>
