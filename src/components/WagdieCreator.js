@@ -6,11 +6,11 @@ const categories = ["background", "back", "body", "armor", "hair", "mask", "fron
 //Set this to the number of traits in each category (WAGDIE).
 const imageCounts = {
     background: 19,
-    back: 34,
+    back: 33,
     body: 37,
     hair: 41,
-    armor: 68,
-    mask: 100,
+    armor: 72,
+    mask: 104,
     front: 4
 };
 
