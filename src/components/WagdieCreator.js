@@ -9,7 +9,7 @@ const imageCounts = {
     back: 33,
     body: 37,
     hair: 41,
-    armor: 72,
+    armor: 70,
     mask: 104,
     front: 4
 };
