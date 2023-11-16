@@ -25,6 +25,17 @@ const imageCountsForD56k = {
     front: 3
 };
 
+//Set this to the number of traits in each category (Other).
+const imageCountsForOther = {
+    background: 0,
+    back: 0,
+    body: 0,
+    hair: 0,
+    armor: 2,
+    mask: 2,
+    front: 0
+};
+
 //This defines a percent chance to clear category instead.
 const clearChances = {
     background: 0,
@@ -47,11 +58,13 @@ const WagdieCreator = () => {
 
     //Each collection needs these, and UI images
     const [isWagdieEnabled, setIsWagdieEnabled] = useState(true);
-    const wagdieToggleImagePath = isWagdieEnabled ? "/wagdie_on.png" : "/wagdie_off.png";
+    const toggleWAGDIEPath = isWagdieEnabled ? "/wagdie_on.png" : "/wagdie_off.png";
 
     const [isD56kEnabled, setIsD56kEnabled] = useState(false);
-    const toggleImagePath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
+    const toggleD56kPath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
 
+    const [isOtherEnabled, setIsOtherEnabled] = useState(false);
+    const toggleOtherPath = isOtherEnabled ? "/other_on.png" : "/other_off.png";
 
     useEffect(() => {
         const updatedImageOptions = {};
@@ -77,11 +90,22 @@ const WagdieCreator = () => {
                 imagesToInclude = [...imagesToInclude, ...d56kImages];
             }
 
+            if (isOtherEnabled) {
+                let otherImages;
+
+                otherImages = Array.from({ length: imageCountsForOther[category] || 0 }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `/other/other_${category}_${num}.png`;
+                });
+                imagesToInclude = [...imagesToInclude, ...otherImages];
+            }
+
+
             updatedImageOptions[category] = imagesToInclude;
         }
 
         setImageOptions(updatedImageOptions);
-    }, [isWagdieEnabled, isD56kEnabled]);
+    }, [isWagdieEnabled, isD56kEnabled, isOtherEnabled]);
 
 
 
@@ -221,17 +245,24 @@ const WagdieCreator = () => {
 
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', paddingBottom: '5px', paddingTop: '5px' }}>
                     <img
-                        src={wagdieToggleImagePath}
-                        alt="Toggle Wagdie"
+                        src={toggleWAGDIEPath}
+                        alt="Include WAGDIE"
                         style={{ width: '50px', height: '50px', cursor: 'pointer' }}
                         onClick={() => setIsWagdieEnabled(!isWagdieEnabled)}
                     />
 
                     <img
-                        src={toggleImagePath}
-                        alt="Toggle d56k"
+                        src={toggleD56kPath}
+                        alt="Include D56K"
                         style={{ width: '50px', height: '50px', cursor: 'pointer' }}
                         onClick={() => setIsD56kEnabled(!isD56kEnabled)}
+                    />
+
+                    <img
+                        src={toggleOtherPath}
+                        alt="Include Other"
+                        style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                        onClick={() => setIsOtherEnabled(!isOtherEnabled)}
                     />
                 </div>
 
