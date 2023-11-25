@@ -28,12 +28,12 @@ const imageCountsForD56k = {
 //Set this to the number of traits in each category (Other).
 const imageCountsForOther = {
     background: 0,
-    back: 0,
+    back: 1,
     body: 0,
-    hair: 0,
+    hair: 1,
     armor: 3,
     mask: 3,
-    front: 2
+    front: 1
 };
 
 //This defines a percent chance to clear category instead.
