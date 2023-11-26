@@ -25,6 +25,17 @@ const imageCountsForD56k = {
     front: 3
 };
 
+//Set this to the number of traits in each category (BOOBA).
+const imageCountsForTTFL = {
+    background: 19,
+    back: 0,
+    body: 0,
+    hair: 0,
+    armor: 0,
+    mask: 0,
+    front: 0
+};
+
 //Set this to the number of traits in each category (Other).
 const imageCountsForOther = {
     background: 0,
@@ -62,6 +73,9 @@ const WagdieCreator = () => {
 
     const [isD56kEnabled, setIsD56kEnabled] = useState(false);
     const toggleD56kPath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
+    
+    const [isTTFLEnabled, setIsTTFLEnabled] = useState(false);
+    const toggleTTFLPath = isTTFLEnabled ? "/ttfl_on.png" : "/ttfl_off.png";
 
     const [isOtherEnabled, setIsOtherEnabled] = useState(false);
     const toggleOtherPath = isOtherEnabled ? "/other_on.png" : "/other_off.png";
@@ -90,6 +104,16 @@ const WagdieCreator = () => {
                 imagesToInclude = [...imagesToInclude, ...d56kImages];
             }
 
+            if (isTTFLEnabled) {
+                let TTFLImages;
+
+                TTFLImages = Array.from({ length: imageCountsForTTFL[category] || 0 }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `/ttfl/ttfl_${category}_${num}.png`;
+                });
+                imagesToInclude = [...imagesToInclude, ...TTFLImages];
+            }
+
             if (isOtherEnabled) {
                 let otherImages;
 
@@ -105,7 +129,7 @@ const WagdieCreator = () => {
         }
 
         setImageOptions(updatedImageOptions);
-    }, [isWagdieEnabled, isD56kEnabled, isOtherEnabled]);
+    }, [isWagdieEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled]);
 
 
 
@@ -259,6 +283,13 @@ const WagdieCreator = () => {
                     />
 
                     <img
+                        src={toggleTTFLPath}
+                        alt="Include TTFL"
+                        style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                        onClick={() => setIsTTFLEnabled(!isTTFLEnabled)}
+                    />
+
+                    <img
                         src={toggleOtherPath}
                         alt="Include Other"
                         style={{ width: '50px', height: '50px', cursor: 'pointer' }}
@@ -292,7 +323,7 @@ const WagdieCreator = () => {
                                 </div>
                             ))
                         ) : (
-                            !isWagdieEnabled && !isD56kEnabled ? (
+                            !isWagdieEnabled && !isD56kEnabled && !isTTFLEnabled && !isOtherEnabled ? (
                                 <div style={{ marginTop: 'calc((100% - 20px) / 2)', fontSize: '20px', color: '#888' }}>ALL TOGGLES OFF</div>
                             ) : (
                                 <div style={{ marginTop: 'calc((100% - 20px) / 2)', fontSize: '20px', color: '#888' }}>NO TRAITS AVAILABLE</div>
@@ -372,8 +403,6 @@ const WagdieCreator = () => {
         ))}
     </div>
 </div>
-
-
 
 
             <div style={{ marginLeft: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
