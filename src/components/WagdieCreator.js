@@ -59,7 +59,6 @@ const clearChances = {
 };
 
 
-
 const WagdieCreator = () => {
 
     const [selectedImages, setSelectedImages] = useState({});
@@ -146,6 +145,22 @@ const WagdieCreator = () => {
         setSelectedImages({});
     };
 
+    const collectionLinks = {
+        WAGDIE: 'https://fateofwagdie.com/characters',
+        D56k: 'https://d56k.com/',
+        TTFL: 'https://opensea.io/collection/through-the-forsaken-lands',
+        Other: 'https://twitter.com/kingoffling'
+    };
+    
+    const handleCollectionLinkClick = () => {
+        let url = '';
+        if (isWagdieEnabled) url = collectionLinks['WAGDIE'];
+        else if (isD56kEnabled) url = collectionLinks['D56k'];
+        else if (isTTFLEnabled) url = collectionLinks['TTFL'];
+        else if (isOtherEnabled) url = collectionLinks['Other'];
+    
+        if (url) window.open(url, '_blank');
+    };
 
     const randomizeCategory = (category) => {
         // Custom percentage chance to clear the layer (as defined)
@@ -427,6 +442,16 @@ const WagdieCreator = () => {
 
                 <button onClick={downloadImage} style={{ display: 'block', width: '220px', marginTop: '20px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>💾 DOWNLOAD</button>
                 <button onClick={copyToClipboard} style={{ display: 'block', width: '220px', marginTop: '10px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>🔥 COPY</button>
+      
+
+                {[isWagdieEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled].filter(Boolean).length === 1 && (
+        <button
+            onClick={handleCollectionLinkClick}
+            style={{ display: 'block', width: '220px', marginTop: '100px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}
+        >
+            🌐
+        </button>
+    )}
             </div>
         </div>
     );
