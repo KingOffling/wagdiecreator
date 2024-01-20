@@ -27,7 +27,7 @@ const imageCountsForD56k = {
 
 //Set this to the number of traits in each category (BOOBA).
 const imageCountsForTTFL = {
-    background: 19,
+    background: 34,
     back: 0,
     body: 0,
     hair: 0,
