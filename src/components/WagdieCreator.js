@@ -10,7 +10,7 @@ const imageCounts = {
     body: 37,
     hair: 41,
     armor: 70,
-    mask: 104,
+    mask: 101,
     front: 4
 };
 
@@ -39,7 +39,7 @@ const imageCountsForTTFL = {
 //Set this to the number of traits in each category (Other).
 const imageCountsForOther = {
     background: 0,
-    back: 1,
+    back: 0,
     body: 0,
     hair: 1,
     armor: 3,
