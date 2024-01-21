@@ -38,7 +38,7 @@ const imageCountsForTTFL = {
 
 //Set this to the number of traits in each category (Other).
 const imageCountsForOther = {
-    background: 0,
+    background: 2,
     back: 0,
     body: 0,
     hair: 1,
