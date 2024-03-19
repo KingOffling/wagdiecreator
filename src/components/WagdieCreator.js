@@ -42,8 +42,8 @@ const imageCountsForOther = {
     back: 0,
     body: 0,
     hair: 5,
-    armor: 8,
-    mask: 8,
+    armor: 9,
+    mask: 9,
     front: 2
 };
 
