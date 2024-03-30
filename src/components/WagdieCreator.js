@@ -44,7 +44,7 @@ const imageCountsForOther = {
     hair: 5,
     armor: 9,
     mask: 9,
-    front: 2
+    front: 4
 };
 
 //This defines a percent chance to clear category instead.
