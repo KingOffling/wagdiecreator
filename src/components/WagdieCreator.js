@@ -322,6 +322,7 @@ const WagdieCreator = () => {
                         style={{ width: '50px', height: '50px', cursor: 'pointer' }}
                         onClick={() => setIsLornEnabled(!isLornEnabled)}
                     />
+                    </div>                <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', paddingBottom: '5px', paddingTop: '5px' }}>
 
                     <img
                         src={toggleD56kPath}
