@@ -14,6 +14,17 @@ const imageCounts = {
     front: 4
 };
 
+//Set this to the number of traits in each category (LORN).
+const imageCountsForLorn = {
+    background: 7,
+    back: 19,
+    body: 36,
+    hair: 29,
+    armor: 67,
+    mask: 64,
+    front: 9
+};
+
 //Set this to the number of traits in each category (BOOBA).
 const imageCountsForD56k = {
     background: 70,
@@ -70,6 +81,9 @@ const WagdieCreator = () => {
     const [isWagdieEnabled, setIsWagdieEnabled] = useState(true);
     const toggleWAGDIEPath = isWagdieEnabled ? "/wagdie_on.png" : "/wagdie_off.png";
 
+    const [isLornEnabled, setIsLornEnabled] = useState(false);
+    const toggleLornPath = isLornEnabled ? "/lorn_on.png" : "/lorn_off.png";
+
     const [isD56kEnabled, setIsD56kEnabled] = useState(false);
     const toggleD56kPath = isD56kEnabled ? "/d56k_on.png" : "/d56k_off.png";
     
@@ -91,6 +105,16 @@ const WagdieCreator = () => {
                     const num = String(index + 1).padStart(3, '0');
                     return `${category}_${num}.png`;
                 });
+            }
+
+            if (isLornEnabled) {
+                let lornImages;
+
+                lornImages = Array.from({ length: imageCountsForLorn[category] || 0 }).map((_, index) => {
+                    const num = String(index + 1).padStart(3, '0');
+                    return `/lorn/lorn_${category}_${num}.png`;
+                });
+                imagesToInclude = [...imagesToInclude, ...lornImages];
             }
 
             if (isD56kEnabled) {
@@ -128,7 +152,7 @@ const WagdieCreator = () => {
         }
 
         setImageOptions(updatedImageOptions);
-    }, [isWagdieEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled]);
+    }, [isWagdieEnabled, isLornEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled]);
 
 
 
@@ -147,6 +171,7 @@ const WagdieCreator = () => {
 
     const collectionLinks = {
         WAGDIE: 'https://fateofwagdie.com/characters',
+        LORN: 'https://lorn.world',
         D56k: 'https://d56k.com/',
         TTFL: 'https://opensea.io/collection/through-the-forsaken-lands',
         Other: 'https://twitter.com/kingoffling'
@@ -155,6 +180,7 @@ const WagdieCreator = () => {
     const handleCollectionLinkClick = () => {
         let url = '';
         if (isWagdieEnabled) url = collectionLinks['WAGDIE'];
+        else if (isLornEnabled) url = collectionLinks['LORN'];
         else if (isD56kEnabled) url = collectionLinks['D56k'];
         else if (isTTFLEnabled) url = collectionLinks['TTFL'];
         else if (isOtherEnabled) url = collectionLinks['Other'];
@@ -291,6 +317,13 @@ const WagdieCreator = () => {
                     />
 
                     <img
+                        src={toggleLornPath}
+                        alt="Include Lorn"
+                        style={{ width: '50px', height: '50px', cursor: 'pointer' }}
+                        onClick={() => setIsLornEnabled(!isLornEnabled)}
+                    />
+
+                    <img
                         src={toggleD56kPath}
                         alt="Include D56K"
                         style={{ width: '50px', height: '50px', cursor: 'pointer' }}
@@ -338,7 +371,7 @@ const WagdieCreator = () => {
                                 </div>
                             ))
                         ) : (
-                            !isWagdieEnabled && !isD56kEnabled && !isTTFLEnabled && !isOtherEnabled ? (
+                            !isWagdieEnabled && !isLornEnabled && !isD56kEnabled && !isTTFLEnabled && !isOtherEnabled ? (
                                 <div style={{ marginTop: 'calc((100% - 20px) / 2)', fontSize: '20px', color: '#888' }}>ALL TOGGLES OFF</div>
                             ) : (
                                 <div style={{ marginTop: 'calc((100% - 20px) / 2)', fontSize: '20px', color: '#888' }}>NO TRAITS AVAILABLE</div>
@@ -444,7 +477,7 @@ const WagdieCreator = () => {
                 <button onClick={copyToClipboard} style={{ display: 'block', width: '220px', marginTop: '10px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}>🔥 COPY</button>
       
 
-                {[isWagdieEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled].filter(Boolean).length === 1 && (
+                {[isWagdieEnabled, isLornEnabled, isD56kEnabled, isTTFLEnabled, isOtherEnabled].filter(Boolean).length === 1 && (
         <button
             onClick={handleCollectionLinkClick}
             style={{ display: 'block', width: '220px', marginTop: '100px', fontSize: '20px', marginLeft: 'auto', marginRight: 'auto' }}
